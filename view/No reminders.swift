@@ -15,10 +15,10 @@ struct NoReminders: View {
                 // العنوان مع الخط
                 PageHeader()
                 Spacer()
-                // النص اللي في النص
+                // نص عدم وجود تذكيرات: حجم 20 وبوزن Semibold ولون 756F6F مثل Sketch
                 Text("No reminders set yet..")
-                    .font(.system(size: 16))
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(Color(red: 117/255, green: 111/255, blue: 111/255))
                 Spacer()
             }
             // زر + يفتح صفحة Set Reminder لإضافة نبتة
