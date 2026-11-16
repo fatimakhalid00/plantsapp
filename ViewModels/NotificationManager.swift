@@ -7,7 +7,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationManager()
 
     // للتجربة: true يرسل الإشعار بعد 5 ثواني، وغيريها false للاستخدام الحقيقي
-    let testMode = true
+    let testMode = false
 
     override init() {
         super.init()
