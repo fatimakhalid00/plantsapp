@@ -46,16 +46,19 @@ struct page1: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 20)
                 // هنا حطيت الزر
-                Button("Set Plant Reminder") {
+                Button {
                     // يفتح صفحة Set Reminder لإضافة نبتة جديدة
                     viewModel.startAdding()
+                } label: {
+                    Text("Set Plant Reminder")
+                        // حجم خط الزر
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.white)
+                        // حجم الزر مثل Sketch (280 في 42) بعد التصغير للجوال
+                        .frame(width: 262, height: 39)
                 }
-                // حجم خط الزر
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(.white)
-                .frame(width: 260, height: 40)
                 // تأثير الزجاج (Liquid Glass) بلون أخضر، وinteractive يخليه يتجاوب لما نضغطه
-                .glassEffect(.regular.tint(Color(red: 51/255, green: 128/255, blue: 105/255)).interactive(), in: .capsule)
+                .glassEffect(.regular.tint(Color.plantGreen).interactive(), in: .capsule)
                 .padding(.top, 105)
                 // عشان كل شي يكون بالنص
                 Spacer()

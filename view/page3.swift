@@ -1,65 +1,84 @@
 import SwiftUI
 
+// صفحة Today Reminder: قائمة النباتات مع شريط التقدم
 struct page3: View {
-    // نفس الـ ViewModel اللي تستخدمه باقي الصفحات
+    // الصفحة تاخذ البيانات من الـ ViewModel
     @Bindable var viewModel: PlantsViewModel
 
     var body: some View {
-        // ZStack عشان زر + يطلع فوق القائمة
+        // الزر + فوق القائمة في الزاوية تحت اليمين
         ZStack(alignment: .bottomTrailing) {
-            // خلفية الشاشة
-            Color(.systemBackground)
-                .ignoresSafeArea()
-            // VStack يرتب العناصر تحت بعض
             VStack(spacing: 0) {
-                // العنوان مع الخط
+                // العنوان والخط اللي تحته
                 PageHeader()
-                // النص اللي يتغير حسب الإنجاز (في النص)
+
+                // النص اللي يتغير حسب الإنجاز، في النص وأبيض مثل Sketch
                 Text(viewModel.statusText)
-                    .font(.system(size: 16))
-                    .foregroundStyle(.primary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 24)
-                // شريط التقدم (أسمك شوي مثل التصميم)
+                    // حجم نص الحالة مثل Sketch
+                    .font(.system(size: 18))
+                    // لون النص أبيض
+                    .foregroundStyle(Color.white)
+                    // النص في نص الشاشة
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.horizontal)
+                    // المسافة بين الخط تحت العنوان والنص مثل Sketch
+                    .padding(.top, 36)
+
+                // شريط التقدم حسب عدد النباتات المنسقية
                 ProgressView(value: viewModel.progress)
-                    .tint(.plantGreen)
-                    .scaleEffect(x: 1, y: 2.2, anchor: .center)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 14)
-                    .padding(.bottom, 8)
+                    .tint(Color.plantGreen)
+                    // نسمك الشريط
+                    .scaleEffect(x: 1, y: 2.2)
+                    // الشريط أضيق من الشاشة شوي مثل Sketch
+                    .padding(.horizontal, 28)
+                    // المسافة بين النص والشريط مثل Sketch (15)
+                    .padding(.top, 15)
+                    // المسافة بين شريط التقدم وأول نبتة مثل Sketch (56 بعد التصغير للجوال، منها 22 من مسافة الصف نفسه)
+                    .padding(.bottom, 32)
+
                 // قائمة النباتات
                 List {
                     ForEach(viewModel.plants) { plant in
-                        // كل صف يعرض نبتة: الدائرة تعلمها، والضغط على الصف يفتح التعديل
                         PlantRow(
                             plant: plant,
+                            // الضغط على الدائرة يقلب حالة السقي
                             onToggle: { viewModel.toggleDone(plant) },
+                            // الضغط على الصف يفتح التعديل
                             onEdit: { viewModel.startEditing(plant) }
                         )
+                        // مسافات الصف من الأطراف
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+                        // الخط الفاصل يبدأ من حافة الشاشة
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                        // لون الخط الفاصل
+                        .listRowSeparatorTint(Color.dividerGray)
                         .listRowBackground(Color.clear)
-                        // السحب لليسار يطلع زر الحذف الأحمر
+                        // السحب على الصف يحذف النبتة
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 viewModel.deletePlant(plant)
                             } label: {
-                                Image(systemName: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                     }
                 }
                 .listStyle(.plain)
+                // نشيل خلفية القائمة الافتراضية
                 .scrollContentBackground(.hidden)
             }
-            // زر + يفتح صفحة Set Reminder لإضافة نبتة
+
+            // زر + يفتح شيت إضافة نبتة جديدة
             PlusButton {
                 viewModel.startAdding()
             }
         }
+        // خلفية الصفحة تتبع الدارك مود
+        .background(Color(.systemBackground).ignoresSafeArea())
     }
 }
 
-// عرض الصفحة في الـ Preview بدون نباتات
+// عرض الصفحة في الـ Preview بدون نباتات، اليوزر هو اللي يضيفها
 #Preview {
     page3(viewModel: PlantsViewModel())
         .preferredColorScheme(.dark)

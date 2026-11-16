@@ -41,7 +41,7 @@ class PlantsViewModel {
         plants.filter { $0.isDone }.count
     }
 
-    // هل كل النباتات انسقت (شاشة 
+    // هل كل النباتات انسقت (شاشة All Done)
     var allDone: Bool {
         !plants.isEmpty && completedCount == plants.count
     }
@@ -77,7 +77,15 @@ class PlantsViewModel {
         showSheet = true
     }
 
-    // يحفظ النبتة: يعدل الموجودة أو يضيف جديدة
+    // يسكر الشيت بدون حفظ (زر الإغلاق)
+    func closeSheet() {
+        // نعتبر المستخدم بدأ عشان تطلع صفحة No reminders
+        hasStarted = true
+        resetForm()
+        showSheet = false
+    }
+
+    // يحفظ النبتة: يعدل الموجودة أو يضيف جديدة، ثم يسكر الشيت
     func savePlant() {
         guard canSave else { return }
         if let id = editingID, let index = plants.firstIndex(where: { $0.id == id }) {
@@ -100,9 +108,10 @@ class PlantsViewModel {
         // أول ما تنحفظ نبتة نعتبر المستخدم بدأ
         hasStarted = true
         resetForm()
+        showSheet = false
     }
 
-    // يحذف النبتة اللي نعدلها (زر Delete Reminder)
+    // يحذف النبتة اللي نعدلها (زر Delete Reminder)، ثم يسكر الشيت
     func deleteEditingPlant() {
         // إشعار: نلغي إشعار النبتة قبل الحذف
         if let plant = plants.first(where: { $0.id == editingID }) {
@@ -111,6 +120,7 @@ class PlantsViewModel {
         plants.removeAll { $0.id == editingID }
         hasStarted = true
         resetForm()
+        showSheet = false
     }
 
     // يحذف نبتة محددة (السحب على الصف)

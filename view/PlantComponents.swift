@@ -7,13 +7,16 @@ struct PageHeader: View {
             // العنوان
             HStack {
                 Text("My Plants 🌱")
-                    // حجم عنوان الصفحة
-                    .font(.system(size: 28, weight: .bold))
+                    // حجم عنوان الصفحة مثل Sketch
+                    .font(.system(size: 30, weight: .bold))
                     .foregroundStyle(.primary)
                 Spacer()
             }
             .padding(.horizontal)
-            .padding(.bottom, 12)
+            // مسافة من فوق عشان العنوان ينزل مثل Sketch
+            .padding(.top, 16)
+            // مسافة بين العنوان والخط
+            .padding(.bottom, 19)
             // الخط تحت العنوان
             Rectangle()
                 .fill(Color.gray.opacity(0.3))
@@ -23,7 +26,7 @@ struct PageHeader: View {
     }
 }
 
-// زر + الدائري اللي تحت اليمين
+// زر + الدائري اللي تحت اليمين بحجم Sketch (44) بعد التصغير للجوال
 struct PlusButton: View {
     // الكود اللي يشتغل لما نضغط الزر
     let action: () -> Void
@@ -31,14 +34,18 @@ struct PlusButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: "plus")
-                .font(.system(size: 18, weight: .semibold))
+                // حجم علامة + داخل الزر
+                .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(.white)
-                .frame(width: 50, height: 50)
-                // تأثير الزجاج (Liquid Glass) بلون أخضر، وinteractive يخليه يتجاوب لما نضغطه
-                .glassEffect(.regular.tint(Color.plantGreen).interactive(), in: .circle)
+                // حجم الزر
+                .frame(width: 41, height: 41)
         }
-        // مسافة الزر من حافة الشاشة
-        .padding(24)
+        .buttonStyle(.plain)
+        // الزجاج البارز بلون Sketch الأخضر
+        .glassCircle(Color.plantGreen)
+        // مسافة الزر من اليمين ومن تحت مثل Sketch
+        .padding(.trailing, 28)
+        .padding(.bottom, 4)
     }
 }
 
@@ -52,47 +59,57 @@ struct PlantRow: View {
     let onEdit: () -> Void
 
     var body: some View {
-        // VStack يحط الغرفة فوق، وتحتها الدائرة مع اسم النبتة
-        VStack(alignment: .leading, spacing: 3) {
-            // الغرفة فوق الاسم (المسافة اليسار عشان تصير فوق الاسم مباشرة)
-            Label("in \(plant.room)", systemImage: "location")
-                .font(.system(size: 11))
-                .foregroundStyle(Color.mutedGray)
-                .padding(.leading, 32)
-            // الدائرة جنب الاسم والكبسولات
-            HStack(alignment: .top, spacing: 12) {
-                // دائرة الإنجاز
-                Button(action: onToggle) {
-                    if plant.isDone {
-                        // لما تنعلّم: دائرة خضراء فاتحة وفيها علامة صح غامقة (مثل Sketch)
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 20))
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(Color.black, Color.doneGreen)
-                    } else {
-                        // قبل التعليم: دائرة فاضية رمادية
-                        Image(systemName: "circle")
-                            .font(.system(size: 20))
-                            .foregroundStyle(Color.mutedGray)
-                    }
+        // الدائرة على اليسار، وبجنبها عمود فيه الغرفة والاسم والكبسولات
+        HStack(alignment: .top, spacing: 23) {
+            // دائرة الإنجاز
+            Button(action: onToggle) {
+                if plant.isDone {
+                    // لما تنعلّم: دائرة خضراء فاتحة وفيها علامة صح غامقة (مثل Sketch)
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 22))
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(Color(red: 24/255, green: 24/255, blue: 29/255), Color.doneGreen)
+                } else {
+                    // قبل التعليم: دائرة فاضية رمادية
+                    Image(systemName: "circle")
+                        .font(.system(size: 22))
+                        .foregroundStyle(Color.mutedGray)
                 }
-                .buttonStyle(.plain)
-                // اسم النبتة وتحته الكبسولات
-                VStack(alignment: .leading, spacing: 6) {
-                    // اسم النبتة
-                    Text(plant.name)
-                        .font(.system(size: 19, weight: .medium))
-                        .foregroundStyle(Color.primary)
-                    // كبسولة الإضاءة كلها صفراء باهتة، وكبسولة الماء كلها زرقاء فاتحة
-                    HStack(spacing: 6) {
-                        tag(plant.light, "sun.max", Color.sunYellow)
-                        tag(plant.waterAmount, "drop", Color.waterBlue)
-                    }
-                }
-                Spacer()
             }
+            .buttonStyle(.plain)
+            // الدائرة قريبة من الحافة، وننزلها عشان تكون بمستوى الاسم مثل Sketch
+            .padding(.leading, 5)
+            .padding(.top, 30)
+            // العمود: الغرفة فوق، الاسم في النص، الكبسولات تحت
+            VStack(alignment: .leading, spacing: 0) {
+                // الغرفة: سهم اللوكيشن ونص الغرفة بنفس الحجم
+                HStack(spacing: 6) {
+                    // سهم اللوكيشن
+                    Image(systemName: "location")
+                        .font(.system(size: 13, weight: .regular))
+                    // اسم الغرفة
+                    Text("in \(plant.room)")
+                        .font(.system(size: 13, weight: .regular))
+                }
+                .foregroundStyle(Color.mutedGray)
+                // اسم النبتة بوزن عادي مثل Sketch
+                Text(plant.name)
+                    .font(.system(size: 24, weight: .regular))
+                    .foregroundStyle(Color.primary)
+                    .padding(.top, 6)
+                // كبسولة الإضاءة صفراء باهتة، وكبسولة الماء زرقاء فاتحة
+                HStack(spacing: 12) {
+                    tag(plant.light, "sun.max", Color.sunYellow)
+                    tag(plant.waterAmount, "drop", Color.waterBlue)
+                }
+                .padding(.top, 8)
+            }
+            Spacer()
         }
-        .padding(.vertical, 6)
+        // مسافة من فوق بين الخط الفاصل والغرفة مثل Sketch
+        .padding(.top, 22)
+        // مسافة تحت الكبسولات
+        .padding(.bottom, 10)
         // الصف كله يبهت لما النبتة تنعلّم
         .opacity(plant.isDone ? 0.5 : 1)
         // عشان الضغط يشتغل على الصف كله
@@ -102,18 +119,18 @@ struct PlantRow: View {
 
     // شكل الكبسولة الصغيرة، الأيقونة والنص بنفس اللون
     func tag(_ text: String, _ icon: String, _ color: Color) -> some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 5) {
             // الأيقونة بلون الكبسولة
             Image(systemName: icon)
-                .font(.system(size: 10))
+                .font(.system(size: 13, weight: .regular))
             // النص بنفس لون الأيقونة
             Text(text)
-                .font(.system(size: 11))
+                .font(.system(size: 13, weight: .regular))
         }
         // نفس اللون للأيقونة والنص مع بعض
         .foregroundStyle(color)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 3)
         .background(Color.tagBG, in: Capsule())
     }
 }

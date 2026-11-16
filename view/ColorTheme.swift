@@ -15,4 +15,8 @@ extension Color {
     static let mutedGray  = Color(red: 151/255, green: 151/255, blue: 151/255)
     // خلفية كبسولة الإضاءة والماء (222224 من Sketch)
     static let tagBG      = Color(red: 34/255, green: 34/255, blue: 36/255)
+    // رمادي القيم في صفحة Set Reminder مثل Bedroom و Pothos (8E8E93 من Sketch)
+    static let valueGray  = Color(red: 142/255, green: 142/255, blue: 147/255)
+    // لون الخط الفاصل بين الصفوف داخل الكروت (414144 من Sketch)
+    static let dividerGray = Color(red: 65/255, green: 65/255, blue: 68/255)
 }

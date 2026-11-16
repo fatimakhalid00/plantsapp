@@ -1,55 +1,49 @@
 import SwiftUI
 
-// الزر الدائري (يستخدم للإغلاق وللتأكيد)
-// action هو الكود اللي يشتغل لما نضغط الزر
-func circleButton(_ icon: String, _ color: Color, action: @escaping () -> Void) -> some View {
-    Button(action: action) {
-        Image(systemName: icon)
-            .font(.system(size: 15, weight: .semibold))
-            .frame(width: 40, height: 40)
-            // تأثير الزجاج (Liquid Glass) بلون الزر، وinteractive يخليه يتجاوب لما نضغطه
-            .glassEffect(.regular.tint(color).interactive(), in: .circle)
-    }
-}
-
 // صفحة إضافة تذكير للنبتة
 struct SetReminderView: View {
     // الصفحة تاخذ القيم من الـ ViewModel بدل الـ State
     @Bindable var viewModel: PlantsViewModel
-    // عشان نسكر الصفحة
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        // يرتب كل العناصر تحت بعض، والمسافة بينهم 40
-        VStack(spacing: 40) {
+        // المسافة صفر، وكل مسافة نحددها بنفسنا تحت عشان تطابق Sketch
+        VStack(spacing: 0) {
 
             // الهيدر: زر إغلاق + العنوان + زر تأكيد
             HStack {
-                // زر الإغلاق يسكر الصفحة بدون حفظ
-                circleButton("xmark", .fieldBG) {
-                    // نعتبر المستخدم بدأ عشان تطلع صفحة No reminders
-                    viewModel.hasStarted = true
-                    dismiss()
+                // زر الإغلاق يسكر الصفحة بدون حفظ (المنطق في الـ ViewModel)
+                CircleButton(icon: "xmark", color: Color(red: 73/255, green: 73/255, blue: 76/255)) {
+                    viewModel.closeSheet()
                 }
                 Spacer()
-                Text("Set Reminder").font(.system(size: 16, weight: .semibold))
+                Text("Set Reminder").font(.system(size: 17, weight: .semibold))
                 Spacer()
-                // زر التأكيد يحفظ النبتة ثم يسكر الصفحة
-                circleButton("checkmark", .plantGreen) {
+                // زر التأكيد يحفظ النبتة ويسكر الصفحة (المنطق في الـ ViewModel)
+                CircleButton(icon: "checkmark", color: .plantGreen) {
                     viewModel.savePlant()
-                    dismiss()
                 }
                 // الزر ما يشتغل ويبهت إذا اسم النبتة فاضي
                 .disabled(!viewModel.canSave)
                 .opacity(viewModel.canSave ? 1 : 0.4)
             }
+            // مسافة الأزرار من الأطراف ومن فوق الشيت
+            .padding(.horizontal, 22)
+            .padding(.top, 13)
+
             // حقل اسم النبتة
             HStack(spacing: 8) {
-                Text("Plant Name").font(.system(size: 16, weight: .medium))
-                TextField("Pothos", text: $viewModel.plantName).font(.system(size: 16)).tint(.plantGreen)
+                Text("Plant Name").font(.system(size: 18, weight: .medium))
+                // الكلمة الرمادية Pothos بلون 8E8E93 مثل Sketch
+                TextField("", text: $viewModel.plantName, prompt: Text("Pothos").foregroundColor(Color.valueGray))
+                    .font(.system(size: 17)).tint(.plantGreen)
             }
-            .padding(.horizontal, 16).padding(.vertical, 14)
+            // مسافة النص من داخل الحقل وارتفاعه مثل Sketch
+            .padding(.horizontal, 18)
+            .frame(height: 56)
             .background(Color.fieldBG, in: Capsule())
+            // مسافات الحقل من الأطراف ومن الهيدر
+            .padding(.horizontal, 19)
+            .padding(.top, 51)
 
             // كرت الأول: الغرفة والإضاءة
             Card {
@@ -57,6 +51,9 @@ struct SetReminderView: View {
                 Line()
                 ReminderRow(icon: "sun.max", title: "Light", options: viewModel.lightOptions, selection: $viewModel.light)
             }
+            // مسافات الكرت من الأطراف ومن حقل الاسم
+            .padding(.horizontal, 19)
+            .padding(.top, 47)
 
             // كرت الثاني: أيام السقي وكمية الماء
             Card {
@@ -64,40 +61,59 @@ struct SetReminderView: View {
                 Line()
                 ReminderRow(icon: "drop", title: "Water", options: viewModel.waterOptions, selection: $viewModel.water)
             }
+            // مسافات الكرت من الأطراف ومن الكرت الأول
+            .padding(.horizontal, 19)
+            .padding(.top, 37)
 
             // زر حذف التذكير، يطلع بس لما نعدل نبتة موجودة
             if viewModel.isEditing {
                 Button {
                     viewModel.deleteEditingPlant()
-                    dismiss()
                 } label: {
                     Text("Delete Reminder")
-                        .font(.system(size: 16, weight: .medium))
+                        .font(.system(size: 17, weight: .medium))
                         .foregroundStyle(.red)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.fieldBG, in: Capsule())
+                        .frame(height: 56)
+                        // لون الزر 2C2C2E وزواياه 26 مثل Sketch
+                        .background(Color.fieldBG, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
                 }
+                // مسافات الزر من الأطراف
+                .padding(.horizontal, 19)
+                // المسافة بين الكرت الثاني وزر الحذف مثل Sketch (67.59 بعد التصغير للجوال)
+                .padding(.top, 63)
             }
 
 //يخلي كل شي فوق
             Spacer()
         }
         .foregroundColor(.white)
-        // مسافات الشاشة من الأطراف ومن فوق
-        .padding(.horizontal, 20).padding(.top, 24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // خلفية الشيت بزوايا علوية دائرية
+        // الشيت ياخذ كل الشاشة، والمحتوى يبدأ من فوق
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        // خلفية الشيت بزوايا علوية دائرية مثل Sketch
         .background(
-            UnevenRoundedRectangle(topLeadingRadius: 40, topTrailingRadius: 40)
-                .fill(Color.sheetBG).ignoresSafeArea(edges: .bottom)
+            UnevenRoundedRectangle(topLeadingRadius: 38, topTrailingRadius: 38)
+                .fill(Color.sheetBG)
         )
-        .padding(.top, 8)
-        // الخلفية السوداء ورا الشيت + الدارك مود
-        .background(Color(.systemBackground).ignoresSafeArea())        .preferredColorScheme(.dark)
+        // المسافة من أعلى الشاشة لين بداية الشيت (68 مثل Sketch)
+        .padding(.top, 68)
+        // الشيت من حافة الشاشة لحافتها، حتى تحت وفوق
+        .ignoresSafeArea()
+        // السحب لتحت يسكر الشيت
+        .gesture(
+            DragGesture().onEnded { value in
+                if value.translation.height > 120 {
+                    viewModel.closeSheet()
+                }
+            }
+        )
+        .preferredColorScheme(.dark)
     }
 }
 
 // عرض الصفحة في الـ Preview
 // نعطيها ViewModel تجريبي عشان يشتغل الـ Preview
-#Preview { SetReminderView(viewModel: PlantsViewModel()) }
+#Preview {
+    SetReminderView(viewModel: PlantsViewModel())
+        .preferredColorScheme(.dark)
+}

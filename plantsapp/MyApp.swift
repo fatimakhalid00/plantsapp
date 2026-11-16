@@ -7,7 +7,7 @@ struct MyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // ZStack ثابت، والصفحات تتبدل داخله والشيت متعلق فيه هو
+            // ZStack: الصفحات تحت، والشيت فوقها
             ZStack {
                 // نختار الصفحة حسب حالة النباتات
                 if viewModel.plants.isEmpty && !viewModel.hasStarted {
@@ -15,19 +15,29 @@ struct MyApp: App {
                     page1(viewModel: viewModel)
                 } else if viewModel.plants.isEmpty {
                     // ما فيه نباتات بعد الإغلاق أو الحذف: No reminders
-                    page4(viewModel: viewModel)
+                    NoReminders(viewModel: viewModel)
                 } else if viewModel.allDone {
                     // كل النباتات انسقت: All Done
-                    page5(viewModel: viewModel)
+                    page4(viewModel: viewModel)
                 } else {
                     // فيه نباتات: Today Reminder
                     page3(viewModel: viewModel)
                 }
+
+                // الشيت: خلفية معتمة وفوقها صفحة Set Reminder
+                if viewModel.showSheet {
+                    // الخلفية المعتمة، الضغط عليها يسكر الشيت
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .onTapGesture { viewModel.closeSheet() }
+                        .transition(.opacity)
+                    // صفحة Set Reminder تطلع من تحت
+                    SetReminderView(viewModel: viewModel)
+                        .transition(.move(edge: .bottom))
+                }
             }
-            // صفحة Set Reminder تطلع كـ Sheet فوق أي صفحة
-            .sheet(isPresented: $viewModel.showSheet) {
-                SetReminderView(viewModel: viewModel)
-            }
+            // حركة ظهور واختفاء الشيت
+            .animation(.easeInOut(duration: 0.3), value: viewModel.showSheet)
             // نطلب إذن الإشعارات أول ما يفتح التطبيق
             .onAppear {
                 NotificationManager.shared.requestPermission()
