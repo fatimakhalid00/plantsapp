@@ -1,16 +1,12 @@
 import Foundation
 
-// شكل النبتة الواحدة (بيانات فقط، بدون أي واجهة)
+// شكل النبتة
 struct Plant: Identifiable {
     // رقم مميز لكل نبتة
     let id = UUID()
-    // اسم النبتة
     var name: String
-    // الغرفة
     var room: String
-    // الإضاءة
     var light: String
-    // كل كم يوم تنسقى
     var wateringDays: String
     // كمية الماء
     var waterAmount: String

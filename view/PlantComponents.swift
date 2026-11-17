@@ -110,7 +110,7 @@ struct PlantRow: View {
         .padding(.top, 22)
         // مسافة تحت الكبسولات
         .padding(.bottom, 10)
-        // الصف كله يبهت لما النبتة تنعلّم
+        // الصف كله يبهت لما النبتة تتحدد
         .opacity(plant.isDone ? 0.5 : 1)
         // عشان الضغط يشتغل على الصف كله
         .contentShape(Rectangle())

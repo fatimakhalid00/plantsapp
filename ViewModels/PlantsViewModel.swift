@@ -131,10 +131,13 @@ class PlantsViewModel {
         hasStarted = true
     }
 
-    // يقلب حالة النبتة بين منسقية وغير منسقية
     func toggleDone(_ plant: Plant) {
-        if let index = plants.firstIndex(where: { $0.id == plant.id }) {
-            plants[index].isDone.toggle()
+            if let index = plants.firstIndex(where: { $0.id == plant.id }) {
+                plants[index].isDone.toggle()
+                // لما تنعلم النبتة إنها انسقت، نبدأ العد من جديد عشان التذكير الجاي يجي بعد المدة من وقت السقي
+                if plants[index].isDone {
+                    NotificationManager.shared.schedule(for: plants[index])
+                }
         }
     }
 
