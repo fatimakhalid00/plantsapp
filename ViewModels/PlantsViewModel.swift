@@ -16,16 +16,19 @@ class PlantsViewModel {
     // قيم الفورم (اللي كانت State في الصفحة)
     var plantName = ""
     var room = "Bedroom"
-    var light = "Full sun"
+    var light = "Full Sun"
     var days = "Every day"
     var water = "20-50 ml"
 
     // خيارات القوائم
-    let roomOptions  = ["Bedroom", "Kitchen", "Living Room"]
-    let lightOptions = ["Full sun", "Partial shade", "Shade"]
-    let daysOptions  = ["Every day", "Every 2 days", "Once a week"]
-    let waterOptions = ["20-50 ml", "50-100 ml", "100-200 ml"]
-
+    // خيارات الغرفة مثل Sketch
+    let roomOptions = ["Bedroom", "Living Room", "Kitchen", "Balcony", "Bathroom"]
+    // خيارات الإضاءة مثل Sketch
+    let lightOptions = ["Full Sun", "Partial Sun", "Low Light"]
+    // خيارات أيام السقي مثل Sketch
+    let daysOptions = ["Every day", "Every 2 days", "Every 3 days", "Once a week", "Every 10 days", "Every 2 weeks"]
+    // خيارات كمية الماء مثل Sketch
+    let waterOptions = ["20-50 ml", "50-100 ml", "100-200 ml", "200-300 ml"]
     // هل نعدل نبتة موجودة أو نضيف جديدة
     var isEditing: Bool {
         editingID != nil
@@ -145,7 +148,7 @@ class PlantsViewModel {
     func resetForm() {
         plantName = ""
         room = "Bedroom"
-        light = "Full sun"
+        light = "Full Sun"
         days = "Every day"
         water = "20-50 ml"
         editingID = nil
